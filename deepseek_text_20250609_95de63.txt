@@ -1,0 +1,17 @@
+
+## 部署指南
+
+1. 确保已安装 Node.js (v14+)
+2. 克隆本项目
+3. 安装依赖：`npm install`
+4. 本地运行：`npm run dev`
+5. 部署到 Vercel：`vercel --prod`
+
+## 环境变量
+
+如需使用数据库，请设置以下环境变量：
+
+- `DB_HOST` - 数据库地址
+- `DB_USER` - 数据库用户名
+- `DB_PASS` - 数据库密码
+- `DB_NAME` - 数据库名称
