@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XX设备有限公司 - 专业设备供应商</title>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* 导航栏样式 */
+        .navbar {
+            background-color: #1a5276;
+            color: white;
+            padding: 15px 0;
+        }
+        
+        .navbar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 16px;
+        }
+        
+        /* 轮播图样式 */
+        .slider {
+            height: 400px;
+            background-color: #f2f2f2;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 公司简介样式 */
+        .about {
+            padding: 50px 0;
+            background-color: white;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 28px;
+            color: #1a5276;
+        }
+        
+        /* 产品展示样式 */
+        .products {
+            padding: 50px 0;
+            background-color: #f9f9f9;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-img {
+            height: 200px;
+            background-color: #ddd;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        /* 新闻样式 */
+        .news {
+            padding: 50px 0;
+        }
+        
+        .news-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        
+        .news-item {
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+        
+        /* 联系方式样式 */
+        .contact {
+            padding: 50px 0;
+            background-color: #1a5276;
+            color: white;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+        
+        .contact-item {
+            text-align: center;
+        }
+        
+        /* 页脚样式 */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">XX设备有限公司</div>
+            <div class="nav-links">
+                <a href="#about">公司简介</a>
+                <a href="#products">产品展示</a>
+                <a href="#news">公司新闻</a>
+                <a href="#contact">联系我们</a>
+                <a href="/admin">后台管理</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 轮播图 -->
+    <div class="slider">
+        <!-- 这里放置轮播图，可以使用Swiper等JS库实现 -->
+    </div>
+    
+    <!-- 公司简介 -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">公司简介</h2>
+            <div id="company-intro">
+                <p>XX设备有限公司成立于20XX年，是一家专业从事XX设备研发、生产、销售和服务的高新技术企业。</p>
+                <p>公司拥有先进的生产设备和专业的技术团队，产品广泛应用于XX、XX、XX等行业，深受客户好评。</p>
+                <p>我们秉承"质量第一、客户至上"的经营理念，致力于为客户提供优质的产品和服务。</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 产品展示 -->
+    <section id="products" class="products">
+        <div class="container">
+            <h2 class="section-title">产品展示</h2>
+            <div class="product-grid" id="product-list">
+                <!-- 产品将通过JS动态加载 -->
+                <!-- 示例产品卡片 -->
+                <div class="product-card">
+                    <div class="product-img" style="background-image: url('product1.jpg');"></div>
+                    <div class="product-info">
+                        <h3>设备型号A</h3>
+                        <p>适用于XX行业的高效设备，具有XX特点...</p>
+                        <a href="#">查看详情</a>
+                    </div>
+                </div>
+                <!-- 更多产品... -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- 公司新闻 -->
+    <section id="news" class="news">
+        <div class="container">
+            <h2 class="section-title">公司新闻</h2>
+            <div class="news-list" id="news-list">
+                <!-- 新闻将通过JS动态加载 -->
+                <!-- 示例新闻项 -->
+                <div class="news-item">
+                    <h3><a href="#">公司参加2023年XX行业展览会</a></h3>
+                    <p class="news-date">2023-05-15</p>
+                    <p class="news-summary">5月10-12日，我公司携最新产品参加了在上海举办的XX行业展览会...</p>
+                </div>
+                <!-- 更多新闻... -->
+            </div>
+        </div>
+    </section>
+    
+    <!-- 联系我们 -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">联系我们</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>电话</h3>
+                    <p id="company-phone">400-123-4567</p>
+                </div>
+                <div class="contact-item">
+                    <h3>邮箱</h3>
+                    <p id="company-email">info@example.com</p>
+                </div>
+                <div class="contact-item">
+                    <h3>微信</h3>
+                    <p id="company-wechat">扫描二维码关注我们</p>
+                    <img src="wechat-qr.jpg" alt="微信二维码" width="100">
+                </div>
+                <div class="contact-item">
+                    <h3>地址</h3>
+                    <p id="company-address">XX省XX市XX区XX路XX号</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <p>© 2023 XX设备有限公司 版权所有 | 备案号：XXXXXX</p>
+        </div>
+    </footer>
+    
+    <script>
+        // 这里可以添加从后端API获取数据的代码
+        document.addEventListener('DOMContentLoaded', function() {
+            // 示例：从后端获取产品数据
+            fetch('/api/products')
+                .then(response => response.json())
+                .then(data => {
+                    const productList = document.getElementById('product-list');
+                    productList.innerHTML = ''; // 清空示例内容
+                    
+                    data.forEach(product => {
+                        const productCard = document.createElement('div');
+                        productCard.className = 'product-card';
+                        productCard.innerHTML = `
+                            <div class="product-img" style="background-image: url('${product.image}');"></div>
+                            <div class="product-info">
+                                <h3>${product.name}</h3>
+                                <p>${product.description}</p>
+                                <a href="/products/${product.id}">查看详情</a>
+                            </div>
+                        `;
+                        productList.appendChild(productCard);
+                    });
+                });
+            
+            // 类似地获取新闻、公司信息等数据
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理系统 - XX设备有限公司</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+</head>
+<body>
+    <div id="app" class="d-flex">
+        <!-- 侧边栏 -->
+        <div class="bg-dark text-white p-3" style="width: 250px; min-height: 100vh;">
+            <h4 class="text-center mb-4">XX设备后台</h4>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" @click="currentView = 'dashboard'">
+                        <i class="bi bi-speedometer2 me-2"></i>仪表盘
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" @click="currentView = 'company'">
+                        <i class="bi bi-building me-2"></i>公司信息
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" @click="currentView = 'products'">
+                        <i class="bi bi-box-seam me-2"></i>产品管理
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#" @click="currentView = 'news'">
+                        <i class="bi bi-newspaper me-2"></i>新闻管理
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- 主内容区 -->
+        <div class="flex-grow-1 p-4">
+            <!-- 仪表盘 -->
+            <div v-if="currentView === 'dashboard'">
+                <h2>仪表盘</h2>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">产品数量</h5>
+                                <p class="card-text display-6">{{ productCount }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">新闻数量</h5>
+                                <p class="card-text display-6">{{ newsCount }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 公司信息管理 -->
+            <div v-if="currentView === 'company'">
+                <h2>公司信息管理</h2>
+                <form @submit.prevent="saveCompanyInfo">
+                    <div class="mb-3">
+                        <label class="form-label">公司名称</label>
+                        <input type="text" class="form-control" v-model="companyInfo.name">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">公司简介</label>
+                        <textarea class="form-control" rows="5" v-model="companyInfo.description"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">联系电话</label>
+                            <input type="text" class="form-control" v-model="companyInfo.phone">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">电子邮箱</label>
+                            <input type="email" class="form-control" v-model="companyInfo.email">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">微信</label>
+                            <input type="text" class="form-control" v-model="companyInfo.wechat">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">公司地址</label>
+                            <input type="text" class="form-control" v-model="companyInfo.address">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">微信二维码</label>
+                        <input type="file" class="form-control" @change="handleWechatUpload">
+                    </div>
+                    <button type="submit" class="btn btn-primary">保存更改</button>
+                </form>
+            </div>
+            
+            <!-- 产品管理 -->
+            <div v-if="currentView === 'products'">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>产品管理</h2>
+                    <button class="btn btn-success" @click="showProductModal(null)">
+                        <i class="bi bi-plus"></i> 添加产品
+                    </button>
+                </div>
+                
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>产品名称</th>
+                            <th>简介</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="product in products" :key="product.id">
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>{{ product.description.substring(0, 50) }}...</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary me-2" @click="showProductModal(product)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" @click="deleteProduct(product.id)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- 产品编辑模态框 -->
+                <div class="modal fade" id="productModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ editingProduct.id ? '编辑产品' : '添加产品' }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form @submit.prevent="saveProduct">
+                                    <div class="mb-3">
+                                        <label class="form-label">产品名称</label>
+                                        <input type="text" class="form-control" v-model="editingProduct.name" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">产品简介</label>
+                                        <textarea class="form-control" rows="3" v-model="editingProduct.description" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">产品规格</label>
+                                        <textarea class="form-control" rows="5" v-model="editingProduct.specs"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">产品图片</label>
+                                        <input type="file" class="form-control" @change="handleProductImageUpload">
+                                        <div v-if="editingProduct.image" class="mt-2">
+                                            <img :src="'/uploads/' + editingProduct.image" alt="产品图片" style="max-height: 200px;">
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">取消</button>
+                                        <button type="submit" class="btn btn-primary">保存</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 新闻管理 -->
+            <div v-if="currentView === 'news'">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2>新闻管理</h2>
+                    <button class="btn btn-success" @click="showNewsModal(null)">
+                        <i class="bi bi-plus"></i> 添加新闻
+                    </button>
+                </div>
+                
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>标题</th>
+                            <th>发布日期</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="newsItem in news" :key="newsItem.id">
+                            <td>{{ newsItem.id }}</td>
+                            <td>{{ newsItem.title }}</td>
+                            <td>{{ formatDate(newsItem.publish_date) }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary me-2" @click="showNewsModal(newsItem)">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger" @click="deleteNews(newsItem.id)">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- 新闻编辑模态框 -->
+                <div class="modal fade" id="newsModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">{{ editingNews.id ? '编辑新闻' : '添加新闻' }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form @submit.prevent="saveNews">
+                                    <div class="mb-3">
+                                        <label class="form-label">新闻标题</label>
+                                        <input type="text" class="form-control" v-model="editingNews.title" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">发布日期</label>
+                                        <input type="date" class="form-control" v-model="editingNews.publish_date">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">新闻内容</label>
+                                        <textarea class="form-control" rows="10" v-model="editingNews.content" required></textarea>
+                                    </div>
+                                    <div class="text-end">
+                                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">取消</button>
+                                        <button type="submit" class="btn btn-primary">保存</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.min.js"></script>
+    <script>
+        const { createApp, ref, onMounted } = Vue;
+        
+        createApp({
+            setup() {
+                const currentView = ref('dashboard');
+                const companyInfo = ref({
+                    name: '',
+                    description: '',
+                    phone: '',
+                    email: '',
+                    wechat: '',
+                    address: '',
+                    wechat_qr: ''
+                });
+                
+                const products = ref([]);
+                const editingProduct = ref({
+                    id: null,
+                    name: '',
+                    description: '',
+                    specs: '',
+                    image: null
+                });
+                
+                const news = ref([]);
+                const editingNews = ref({
+                    id: null,
+                    title: '',
+                    content: '',
+                    publish_date: new Date().toISOString().split('T')[0]
+                });
+                
+                const productCount = ref(0);
+                const newsCount = ref(0);
+                
+                // 初始化数据
+                const fetchData = async () => {
+                    try {
+                        // 获取公司信息
+                        const companyRes = await fetch('/api/company');
+                        if (companyRes.ok) {
+                            companyInfo.value = await companyRes.json();
+                        }
+                        
+                        // 获取产品列表
+                        const productsRes = await fetch('/api/products');
+                        if (productsRes.ok) {
+                            products.value = await productsRes.json();
+                            productCount.value = products.value.length;
+                        }
+                        
+                        // 获取新闻列表
+                        const newsRes = await fetch('/api/news');
+                        if (newsRes.ok) {
+                            news.value = await newsRes.json();
+                            newsCount.value = news.value.length;
+                        }
+                    } catch (error) {
+                        console.error('获取数据失败:', error);
+                    }
+                };
+                
+                // 保存公司信息
+                const saveCompanyInfo = async () => {
+                    try {
+                        const res = await fetch('/api/company', {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(companyInfo.value)
+                        });
+                        
+                        if (res.ok) {
+                            alert('公司信息已保存');
+                        } else {
+                            alert('保存失败');
+                        }
+                    } catch (error) {
+                        console.error('保存公司信息失败:', error);
+                        alert('保存失败');
+                    }
+                };
+                
+                // 处理微信二维码上传
+                const handleWechatUpload = (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('image', file);
+                        
+                        fetch('/api/upload/wechat', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            companyInfo.value.wechat_qr = data.filePath;
+                        });
+                    }
+                };
+                
+                // 显示产品编辑模态框
+                const showProductModal = (product) => {
+                    if (product) {
+                        editingProduct.value = { ...product };
+                    } else {
+                        editingProduct.value = {
+                            id: null,
+                            name: '',
+                            description: '',
+                            specs: '',
+                            image: null
+                        };
+                    }
+                    const modal = new bootstrap.Modal(document.getElementById('productModal'));
+                    modal.show();
+                };
+                
+                // 处理产品图片上传
+                const handleProductImageUpload = (event) => {
+                    editingProduct.value.image = event.target.files[0];
+                };
+                
+                // 保存产品
+                const saveProduct = async () => {
+                    try {
+                        const formData = new FormData();
+                        formData.append('name', editingProduct.value.name);
+                        formData.append('description', editingProduct.value.description);
+                        formData.append('specs', editingProduct.value.specs);
+                        
+                        if (editingProduct.value.image instanceof File) {
+                            formData.append('image', editingProduct.value.image);
+                        }
+                        
+                        const url = editingProduct.value.id 
+                            ? `/api/products/${editingProduct.value.id}`
+                            : '/api/products';
+                            
+                        const method = editingProduct.value.id ? 'PUT' : 'POST';
+                        
+                        const res = await fetch(url, {
+                            method,
+                            body: formData
+                        });
+                        
+                        if (res.ok) {
+                            await fetchData();
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('productModal'));
+                            modal.hide();
+                        } else {
+                            alert('保存失败');
+                        }
+                    } catch (error) {
+                        console.error('保存产品失败:', error);
+                        alert('保存失败');
+                    }
+                };
+                
+                // 删除产品
+                const deleteProduct = async (id) => {
+                    if (confirm('确定要删除这个产品吗？')) {
+                        try {
+                            const res = await fetch(`/api/products/${id}`, {
+                                method: 'DELETE'
+                            });
+                            
+                            if (res.ok) {
+                                await fetchData();
+                            } else {
+                                alert('删除失败');
+                            }
+                        } catch (error) {
+                            console.error('删除产品失败:', error);
+                            alert('删除失败');
+                        }
+                    }
+                };
+                
+                // 显示新闻编辑模态框
+                const showNewsModal = (newsItem) => {
+                    if (newsItem) {
+                        editingNews.value = { 
+                            ...newsItem,
+                            publish_date: newsItem.publish_date.split('T')[0]
+                        };
+                    } else {
+                        editingNews.value = {
+                            id: null,
+                            title: '',
+                            content: '',
+                            publish_date: new Date().toISOString().split('T')[0]
+                        };
+                    }
+                    const modal = new bootstrap.Modal(document.getElementById('newsModal'));
+                    modal.show();
+                };
+                
+                // 保存新闻
+                const saveNews = async () => {
+                    try {
+                        const url = editingNews.value.id 
+                            ? `/api/news/${editingNews.value.id}`
+                            : '/api/news';
+                            
+                        const method = editingNews.value.id ? 'PUT' : 'POST';
+                        
+                        const res = await fetch(url, {
+                            method,
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(editingNews.value)
+                        });
+                        
+                        if (res.ok) {
+                            await fetchData();
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('newsModal'));
+                            modal.hide();
+                        } else {
+                            alert('保存失败');
+                        }
+                    } catch (error) {
+                        console.error('保存新闻失败:', error);
+                        alert('保存失败');
+                    }
+                };
+                
+                // 删除新闻
+                const deleteNews = async (id) => {
+                    if (confirm('确定要删除这条新闻吗？')) {
+                        try {
+                            const res = await fetch(`/api/news/${id}`, {
+                                method: 'DELETE'
+                            });
+                            
+                            if (res.ok) {
+                                await fetchData();
+                            } else {
+                                alert('删除失败');
+                            }
+                        } catch (error) {
+                            console.error('删除新闻失败:', error);
+                            alert('删除失败');
+                        }
+                    }
+                };
+                
+                // 格式化日期
+                const formatDate = (dateString) => {
+                    return new Date(dateString).toLocaleDateString();
+                };
+                
+                // 组件挂载时获取数据
+                onMounted(() => {
+                    fetchData();
+                });
+                
+                return {
+                    currentView,
+                    companyInfo,
+                    products,
+                    editingProduct,
+                    news,
+                    editingNews,
+                    productCount,
+                    newsCount,
+                    saveCompanyInfo,
+                    handleWechatUpload,
+                    showProductModal,
+                    handleProductImageUpload,
+                    saveProduct,
+                    deleteProduct,
+                    showNewsModal,
+                    saveNews,
+                    deleteNews,
+                    formatDate
+                };
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
